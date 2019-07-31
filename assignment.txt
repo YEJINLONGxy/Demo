@@ -1,0 +1,18 @@
+1、单行定义多个变量或赋值
+>>> a, b = 45, 54
+>>> a
+45
+>>> b
+54
+
+1、要明白这是怎么工作的，你需要学习元组(tuple) 这个数据类型,是用逗号创建元组。
+2、在赋值语句的右边我们创建了一个元组，我们称这为元组封装(tuple packing), 赋值语句的左边我们则做的是元组拆装 (tuple unpacking)
+
+>>> data = ("shiyanlou", "China", "Python")
+>>> name, country, language = data
+>>> name
+'shiyanlou'
+>>> country
+'China'
+>>> language
+'Python'
