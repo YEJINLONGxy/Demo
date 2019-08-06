@@ -1,0 +1,50 @@
+
+集合
+
+集合是一个无序不重复元素的集。基本功能包括关系测试和消除重复元素。
+集合对象还支持 union（联合），intersection（交），difference（差） symmetric difference（对称差集）等数学运算
+
+大括号或 set() 函数可以用来创建集合。
+注意：想要创建空集合，你必须使用 set() 而不是 {}。后者用于创建空字典
+
+下面是集合的常见操作：
+
+>>> basket = {'apple', 'orange', 'apple', 'pear', 'orange', 'banana'}
+>>> print(basket)
+{'orange', 'banana', 'apple', 'pear'}		#可以看到重复的元素被去除
+>>> 'orange' in basket
+True
+>>> 'crabgrass' in basket
+False
+
+演示对两个单词中的字母进行集合操作
+
+>>> a = set('abracadabra')
+>>> b = set('alacazam')
+>>> a
+{'c', 'd', 'a', 'r', 'b'}		#a 去重后的字母
+>>> b	
+{'c', 'a', 'm', 'z', 'l'}		#b 去重后的字母
+>>> a - b
+{'b', 'r', 'd'}				#a 有，而 b 没有的字母
+>>> b - a
+{'l', 'z', 'm'}				#b 有，而 a 没有的字母
+>>> a | b
+{'c', 'd', 'a', 'r', 'm', 'z', 'b', 'l'}	# 存在于a 或 b 的字母
+>>> a & b				
+{'c', 'a'}				#a 和 b都有的字母
+>>> a ^ b
+{'r', 'z', 'd', 'b', 'l', 'm'}		# 存在于 a 或 b ，但两则同时存在的字母则去除
+
+从集合中添加或弹出元素：
+>>> a = {'a', 'e', 'h', 'g'}
+>>> a.pop()				#pop 方法随机删除一个元素并打印
+'h'
+>>> a.add('c')
+>>> a
+{'c', 'a', 'g', 'e'}
+
+
+
+
+

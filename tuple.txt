@@ -1,0 +1,61 @@
+
+元组
+
+元组是由数个逗号分割的值组成
+>>> a = 'Fedora', 'ShiyanLou', 'Kukuntu', 'Pardus'
+>>> a
+('Fedora', 'ShiyanLou', 'Kukuntu', 'Pardus')
+>>> for x in a:
+...     print(x, end=' ')
+... 
+Fedora ShiyanLou Kukuntu Pardus 
+
+你可以对任何一个元组执行拆封操作并赋值给多个变量，就像下面这样:
+>>> x, y = divmod(15,2)   #第一个元素：15 除 2 的整数；第二元素：15 除 2 的余数 
+>>> x
+7
+>>> y
+1
+
+元组是不可变类型，这意味着你不能在元组内删除或添加或编辑任何值
+如果你尝试这些操作，将会出错：
+
+>>> a = (1, 2, 3, 4)
+>>> a
+(1, 2, 3, 4)
+>>> del a[0]
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: 'tuple' object doesn't support item deletion
+
+要创建只含有一个元素的元组，在值后面跟一个逗号
+>>> a = (123)
+>>> a
+123
+>>> type(a)
+<class 'int'>
+>>> a = (123, )		#需要逗号，创建一个元素的元组
+>>> b = 321,
+>>> a
+(123,)
+>>> b
+(321,)
+>>> type(a)
+<class 'tuple'>
+>>> type(b)
+<class 'tuple'>
+
+通过内建函数 type() 你可以知道任意变量的数据类型
+还记得我们使用 len() 函数来查询任意序列类型数据的长度吗？
+
+>>> type(len)
+<class 'builtin_function_or_method'>
+
+
+
+
+
+
+
+
+
