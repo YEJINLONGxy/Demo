@@ -1,0 +1,25 @@
+字符串剥离
+
+字符串有几个进行剥离操作的方法。最简单的一个是 strip(chars)
+用来剥离字符串首尾中指定的字符，它允许有一个字符串参数，这个参数为剥离哪些字符提供依据。
+不指定参数则默认剥离掉首尾的空格和换行符，代码如下：
+
+>>> s
+'#a bc,'
+>>> s.strip("#,")
+'a bc'
+>>> s = " a bc\n"
+>>> s.strip()
+'a bc
+
+使用lstrip(chars) 或 rstrip(chars) 只对字符串左或右剥离
+lstrip(chars)  #删除在字符串左边出现的'c','w','s','d','.'字符，没有就匹配到就略过
+>>> s = "www.foss.in"
+>>> s.lstrip("cwsd.")
+'foss.in'
+
+rstrip(chars)	#删除在字符串右边出现的'c','n','w','d','i','.'字符，没有匹配到就略过
+>>> s.rstrip("cnwdi.")
+'www.foss'
+
+

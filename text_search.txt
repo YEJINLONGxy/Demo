@@ -1,0 +1,15 @@
+文本搜索
+搜索字符串里的文本或子字符串
+
+>>> s = "faulty for a reason"
+>>> s.find('for')
+7
+>>> s.find('fora')
+-1
+>>> s.startswith('fa')		# 检查字符串是否以 fa 开头
+True
+>>> s.endswith('reason')	# 检查字符串是否以 reason 结尾
+True
+
+find() 找到第一个匹配的字符串，没有找到则返回 -1
+

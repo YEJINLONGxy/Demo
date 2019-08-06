@@ -1,0 +1,82 @@
+字符串的方法:
+每一个字符串对象都有几个可用的内建方法，我们已经使用过一些了，
+
+1.方法 split() 分割任意字符串，split()允许有一个参数，
+用来指定字符串以什么字符分割(默认为" "空格) 返回包含所有分割后的字符串的列表
+>>> s = "shi yan lou"
+>>> s.split()
+['shi', 'yan', 'lou']
+
+指定"i" 为分隔符
+>>> s.split("i")
+['sh', ' yan lou']
+
+指定":"分隔符
+>>> x = "shiyanlou:is:waitiong"
+>>> x.split(":")
+['shiyanlou', 'is', 'waitiong']
+
+2.方法 title() 返回字符串的标题版本， 即单词首字母大写其余字母小写
+>>> s = 'shi yan lou'
+>>> s.title()
+'Shi Yan Lou
+
+2.方法 upper() 返回字符串全部大写的版本，反之 lower() 返回字符串的全部小写版本
+>>> s
+'shi yan lou'
+>>> z = s.upper()
+>>> z
+'SHI YAN LOU'
+>>> z.lower()
+'shi yan lou'
+
+3.方法 swapcase() 返回字符串大小写交换后的版本
+>>> s = "I am A pRoGraMMer"
+>>> s.swapcase()
+'i AM a PrOgRAmmER'
+
+4.方法 isalnum() 检查所有字符是否只有字符和数字
+下面的代码中第一行的字符串 s 中包含空字符，所有返回False
+>>> s = "jdwb 2323bjb"
+>>> s.isalnum()
+False
+
+5.方法 isalpha() 检查字符串之中是否只有字母
+>>> s = "SankarshanSir"
+>>> s.isalpha()
+True
+>>> s = "Sankarshan Sir"
+>>> s.isalpha()
+False
+
+6.方法 isdigit() 检查字符串是否所有字符为数字
+>>> s = '123'
+>>> s.isdigit()
+True
+
+7.方法 islower() 检查字符串是否所有字符为小写
+>>> s = 'Shiyanlou Is Coming'
+>>> s.islower()
+False
+
+8.方法 istitle() 检查字符串是否为标题样式
+>>> s = 'Shiyanlou Is Coming'
+>>> s.istitle()
+True
+
+9.方法 isupper() 检查字符串是否所有字符为大写
+>>> s = 'CHINA'
+>>> s.isupper()
+True
+
+10.方法 join() 使用指定字符连接多个字符串
+它需要一个包含字符串元素的列表作为输入，然后连接列表内的字符元素
+下面的例子中,我们基于空格" " 分割字符串"GNU/Linux is great" ,然后用"-" 链接他们
+>>> s = "GUAN/Linux is great"
+>>> "-".join(s.split())
+'GUAN/Linux-is-great'
+
+
+
+
+
