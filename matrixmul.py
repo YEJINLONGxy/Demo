@@ -8,23 +8,17 @@ print("Enter value for the Matrix A")
 a = []
 for i in range(n):
 	a.append([int(x) for x in input().split()])
-
-print(a)
-
+#print(a)
 print("Enter value for the Matrix B")
 b = []
 for i in range(n):
 	b.append([int(x) for x in input().split()])
-
-print(b)
-
+#print(b)
 c = []
 for i in range(n):
 	c.append([a[i][j] * b[i][j] for j in range(n)])
-
-print(c)
+#print(c)
 print("after matrix multiplication")
-
 print("-" * 7 * n)
 for x in c:
 	for y in x:
@@ -32,6 +26,8 @@ for x in c:
 	print()
 print("-" * 7 * n)
 
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++
 #运行如下
 
 #[root@dev1 python_code]# ./matrixmul.py 
