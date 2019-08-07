@@ -1,0 +1,95 @@
+
+函数默认参数值：
+
+函数的参数变量可以有默认值，也就是说如果我们对指定的参数变量没有给出任何值则会赋其默认值
+
+>>> def test(a, b=-99):
+...     if a > b:
+...             return True
+...     else:
+...             return False
+... 
+
+在上面的例子里，我们在函数的参数列表写出 b = -99。
+这表示如果调用者未给出 b 的值，那么 b 的值默认为 -99。
+这是一个关于默认参数的非常简单的例子。
+
+调用函数测试代码
+>>> test(12, 23)
+False
+>>> test(12)
+True
+
+有两个非常重要的地方，第一个是具有默认值的参数后面不能再有普通参数，比如 f(a,b=90,c) 就是错误的
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+第二个是默认值只被赋值一次，因此如果默认值是任何可变对象时会有所不同，
+比如列表、字典或大多数类的实例。
+例如，下面的函数在后续调用过程中会累积（前面）传给它的参数:
+
+>>> def f(a, data=[]):
+...     data.append(a)
+...     return data
+... 
+>>> print(f(1))
+[1]
+>>> print(f(2))
+[1, 2]
+>>> print(f(3))
+[1, 2, 3]
+
+
+要避免这个问题，你可以像下面这样：
+
+>>> def f(a, data=None):
+...     if data is None:
+...             data = []
+...     data.append(a)
+...     return data
+... 
+>>> print(f(1))
+[1]
+>>> print(f(2))
+[2]
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+关键字参数
+
+>>> def func(a, b=5, c=10):
+...     print('a is {} and b is {} and c is {}'.format(a, b, c))
+... 
+>>> func(12, 24)
+a is 12 and b is 24 and c is 10
+>>> func(12, c = 24)
+a is 12 and b is 5 and c is 24
+>>> func(b=12, c=24, a=-1)
+a is -1 and b is 12 and c is 24
+
+在上面的例子中你能看见调用函数时使用了变量名
+比如 func(12,c = 24)，这样我们将 24 赋给 c 且 b 具有默认值
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+强制关键字参数
+
+我们也能将函数的参数标记为只允许使用关键字参数。
+用户调用函数时将只能对每一个参数使用相应的关键字参数
+
+>>> def hello(*, name="User"):
+...     print("Hello", name)
+... 
+>>> hello('shiyanlou')
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: hello() takes 0 positional arguments but 1 was given
+>>> hello(name="shiyanlou")
+Hello shiyanlou
+
+
+
+
+
