@@ -1,0 +1,169 @@
+
+文件操作示例程序
+
+本部分实验将通过两个实例程序来实践之前学习的文件操作方法：
+
+   1、拷贝文件程序
+   2、文本文件信息统计程序
+
+拷贝文件：
+   拷贝给定的文本文件到另一个给定的文本文件
+
+[root@dev1 shiyanlou]# cat copyfile.py 
+#!/usr/bin/env python3
+
+import sys
+
+if len(sys.argv) < 3:		#检测参数是否小于3.如果是，返回操作提示
+	print("Wrong parmeter")
+	print("./copyfile.py file1 file2")
+	sys.exit(1)
+
+f1 = open(sys.argv[1])		# 获取第一个文件，打开
+s = f1.read()			#读取文件内容，赋值给 s
+f1.close()
+
+f2 = open(sys.argv[2], 'w')	#获取第二个拷贝后的文件名，并创建文件	
+f2.write(s)			#将 s 内容写入到文件 f2(即拷贝后的文件)
+f2.close()
+
+
+运行程序：
+
+[root@dev1 shiyanlou]# chmod +x copyfile.py
+[root@dev1 shiyanlou]# ./copyfile.py sample.txt sample2.txt
+[root@dev1 shiyanlou]# ls sample*
+sample2.txt  sample.txt
+
+---------------------------------
+
+
+	在这里使用了一个新模块 sys。sys.argv 包含所有命令行参数。这个程序的功能完全可以使用 shell 的 cp 命令替代：在 cp 后首先输入被拷贝的文件的文件名，然后输入新文件名
+
+sys.argv 的第一个值是命令自身的名字， 下面这个程序打印命令行参数
+
+[root@dev1 shiyanlou]# cat argvtest.py 
+#!/usr/bin/env python3
+import sys
+print("First value", sys.argv[0])
+print("All values")
+
+for i, x in enumerate(sys.argv):
+	print("sys.argv[{}] : ".format(i) , x )
+
+运行程序：
+
+[root@dev1 shiyanlou]# chmod +x argvtest.py
+[root@dev1 shiyanlou]# ./argvtest.py Hi there 
+First value ./argvtest.py
+All values
+sys.argv[0] :  ./argvtest.py
+sys.argv[1] :  Hi
+sys.argv[2] :  there
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+    这里我们用到了一个新函数 enumerate(iterableobject)在序列中循环时，索引位置和对应值可以使用它同时
+得到。
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+文本文件相关信息统计
+
+[root@dev1 shiyanlou]# cat parsefile.py 
+#!/usr/bin/env python3
+
+#文本文件相关信息统计
+
+#编写一个程序，对任意给定文本文件中的制表符、行、空格进行计数
+
+import os, sys
+
+def parse_file(path):
+	"""
+	分析给定文本文件，返回期空格、制表符、行的相关信息
+	
+	:arg path: 要分析的文件文件的路径
+
+	:return: 包含空格数、制表符、行数的元组
+	"""
+
+	fd = open(path)
+	i = 0					#计数行
+	spaces = 0
+	tabs = 0
+	for i, line in enumerate(fd):
+		spaces += line.count(" ")	#字符串line中，计数空格
+		tabs += line.count("\t")
+		#print(line)
+	#现在关闭打开的文件
+	fd.close()
+
+	#以元组形势返回结果
+	return spaces, tabs, i + 1
+
+
+def main(path):
+	"""
+	函数用于打印文件分析结果
+
+	:arg path: 要分析的文本文件的路径
+	:return: 若文件存在则为 True, 否则 False
+	"""
+
+	if os.path.exists(path):
+		spaces, tabs, lines = parse_file(path)		#return 返回的数据赋值左边
+		print("Spaces {}. tabs {}. lines {}".format(spaces, tabs, lines))
+		return True
+	else:
+		return False
+
+
+if __name__ == '__main__':
+	if len(sys.argv) > 1:
+		main(sys.argv[1])
+	else:
+		sys.exit(-1)
+	sys.exit(0)
+
+
+运行程序：
+
+[root@dev1 shiyanlou]#chmod +x  ./parsefile.py 
+
+[root@dev1 shiyanlou]# ./parsefile.py sample.txt 
+Spaces 4. tabs 0. lines 2
+
+
+    程序有两个函数，main() 和 parse_file() ，parse_file 函数真正的分析文件并返回结果，然后在 main() 
+函数里打印结果。通过分割代码到一些更小的单元（函数）里，能帮助我们组织代码库并且也更容易为函数编写测
+试用例
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+使用 with 语句
+
+    在实际情况中，我们应该尝试使用 with 语句处理文件对象，它会在文件用完后会自动关闭，就算发生异常也
+没关系。它是 try-finally 块的简写：
+
+>>> with open("sample.txt") as fobj:
+...     for line in fobj:
+...             print(line, end="")
+... 
+I love Python
+I love shiyanlou
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

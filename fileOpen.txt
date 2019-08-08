@@ -1,0 +1,145 @@
+我们使用 open() 函数打开文件。
+它需要两个参数，第一个参数是文件路径或文件名，第二个是文件的打开模式。
+模式通常是下面这样的：
+
+	"r"，以只读模式打开，你只能读取文件但不能编辑/删除文件的任何内容
+	"w"，以写入模式打开，如果文件存在将会删除里面的所有内容，然后打开这个文件进行写入
+	"a"，以追加模式打开，写入到文件中的任何数据将自动添加到末尾
+
+    默认的模式为只读模式，也就是说如果你不提供任何模式，open() 函数将会以只读模式打开文件。我们将实验打开一个文件，不过要准备实验材料：
+
+[root@dev1 shiyanlou]# wget http://labfile.oss.aliyuncs.com/courses/596/sample.txt
+
+进入Python3交换模式：
+
+>>> fobj = open("/home/shiyanlou/sample.txt")
+>>> fobj
+<_io.TextIOWrapper name='/home/shiyanlou/sample.txt' mode='r' encoding='UTF-8'>
+>>> 
+
+++++++++++++++++++++++++++++++++++++++++
+
+文件关闭：
+
+打开文件后我们应该总是关闭文件。我们使用方法 close() 完成这个操作
+
+>>> fobj.close()
+
+   始终确保你显式关闭每个打开的文件，一旦它的工作完成你没有任何理由保持打开文件。因为程序能打开的文
+件数量是有上限的。如果你超出了这个限制，没有任何可靠的方法恢复，因此程序可能会崩溃。每个打开的文件关
+联的数据结构（文件描述符/句柄/文件锁...）都要消耗一些主存资源。因此如果许多打开的文件没用了你可以结
+束大量的内存浪费，并且文件打开时始终存在数据损坏或丢失的可能性
+
+
+++++++++++++++++++++++++++++++++++++++++
+
+
+文件读取：
+
+使用 read() 方法一次性读取整个文件
+
+>>> fobj = open("sample.txt")
+>>> fobj.read()
+'I love Python\nI love shiyanlou\n'
+>>> fobj.close()
+
+如果再次调用 read() , 它会报错，因为它已经读取晚整个文件
+
+>>> fobj.read()
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+ValueError: I/O operation on closed file
+
+
+    read(size) 有一个可选的参数 size，用于指定字符串长度。如果没有指定 size 或者指定为负数，就会读取
+并返回整个文件。当文件大小为当前机器内存两倍时，就会产生问题。反之，会尽可能按比较大的 size 读取和回
+数据。
+
+
+
+readline() 能帮组你每次读取文件的一行
+
+>>> fobj = open("sample.txt")
+>>> fobj.readline()
+'I love Python\n'
+>>> fobj.readline()
+'I love shiyanlou\n'
+>>> fobj.close()
+
+使用readlines() 方法读取所有行到一个列表中
+
+>>> fobj = open("sample.txt")
+>>> fobj.readlines()
+['I love Python\n', 'I love shiyanlou\n']
+>>> fobj.close()
+
+
+可以循环遍历文件对象来读取文件中的每一行
+
+>>> fobj = open("sample.txt")
+>>> for x in fobj:
+...     print(x, end=" ")
+... 
+I love Python
+ I love shiyanlou
+ >>> fobj.close()
+
+让我们写一个程序,这个程序接受用户输入的字符串作为将要读取的文件的文件名,并且在屏幕上打印文件内容：
+
+[root@dev1 shiyanlou]# cat test.py 
+#!/usr/bin/env python3
+name = input("Enter the file name: ")
+fobj = open(name)
+print(fobj.read())
+fobj.close()
+
+运行程序：
+[root@dev1 shiyanlou]# chmod +x test.py 
+[root@dev1 shiyanlou]# ./test.py 
+Enter the file name: sample.txt		#输入要处理的文件名
+I love Python
+I love shiyanlou
+
+++++++++++++++++++++++++++++++++++++++++
+
+文件写入
+
+通过 write() 方法打开一个文件然后我们随便写入一下文本：
+
+>>> fobj = open("ircnicks.txt", 'w')
+>>> fobj.write("powerpork\n")
+10
+>>> fobj.write("indrag\n")
+7
+>>> fobj.write("mishti\n")
+7
+>>> fobj.write("sankarshan")
+10
+>>> fobj.close()
+
+----------------
+查看创建的文件：
+[root@dev1 shiyanlou]# ls ircnicks.txt 
+ircnicks.txt
+[root@dev1 shiyanlou]# cat ircnicks.txt 
+powerpork
+indrag
+mishti
+sankarshan
+
+
+读取刚刚创建的文件：
+
+>>> fobj = open("ircnicks.txt")
+>>> s = fobj.read()
+>>> fobj.close()
+>>> print(s)
+powerpork
+indrag
+mishti
+sankarshan
+
+
+
+
+
