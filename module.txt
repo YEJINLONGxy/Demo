@@ -1,0 +1,408 @@
+
+    在这个实验我们将要学习 Python 模块相关知识。包括模块的概念和导入方法，包的概念和使用，第三方模块的介绍，
+命令行参数的使用等
+
+知识点：
+	a.模块的导入
+	b.包
+	c.默认/第三方模块介绍
+	d.命令行参数
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+模块：
+
+    到目前为止，我们在 Python 解释器中写的所有代码都在我们退出解释器的时候丢失了。
+    但是当人们编写大型程序的时候他们会倾向于将代码分为多个不同的文件以便使用，调试以及拥有更好的可读性。
+    在 Python 中我们使用模块来到达这些目的,模块是包括 Python 定义和声明的文件,文件名就是模块名加上 .py 后缀
+
+
+    你可以由全局变量 __name__ 得到模块的模块名 (一个字符串)
+
+
+ 现在我们来看看模块是怎样工作的。创建一个 bars.py 文件：
+
+[root@dev1 shiyanlou]# find / -name bars.py
+/home/shiyanlou/mymodule/bars.py
+[root@dev1 shiyanlou]# cat mymodule/bars.py 
+"""
+Bars Module
+===========
+这是一个打印不同分割线的示例模块
+"""
+
+def startbar(num):
+	"""打印 * 分割线
+	
+	:arg num: 线长
+	"""
+	print("*" * num)
+
+
+def hashbar(num):
+	"""打印 # 分割线
+	
+	:arg num: 线长
+	"""
+	print("#" * num)
+
+def simplebar(num):
+	"""打印 - 分割线
+	
+	:arg num: 长线
+	"""
+	print("-" * num)
+
+导入模块：
+
+>>> import mymodule  or  >>> import mymodule.bars
+
+必须使用模块名来访问模块内的函数：
+
+>>> mymodule.bars.hashbar(10)
+##########
+>>> mymodule.bars.simplebar(10)
+----------
+>>> mymodule.bars.startbar(10)
+**********
+>>> 
+
+导入模块方式二：
+有不同的方式导入模块。我们已经看到过一种了。你甚至可以从模块中导入指定的函数：
+>>> from mymodule.bars import simplebar, startbar
+>>> simplebar(20)
+-------------------- 
+
+你也可以使用 from module import * 导入模块中的所有定义，然而这并不是推荐的做法
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+包：
+
+  含有 __init__.py 文件的目录可以用来作为一个包, 目录里的所有 .py 文件都是这个包的子模块。
+
+   本节实验将创建下面的 mymodule 目录，目录结构如下：
+
+[root@dev1 shiyanlou]# tree mymodule/
+mymodule/
+├── bars.py
+├── __init__.py
+└── utils.py
+
+0 directory, 3 files
+
+在这个例子中，mymodule 是一个包名并且 bars 和 utils 是里面的两个子模块：
+
+1.首先创建 mymodule 目录：
+#cd /home/shiyanlou
+#mkdir mymodelu
+
+2.然后将上一节编写的 bars.py 拷贝到 mymodule 目录下，然后可以使用 touch 创建一个 utils.py 文件。
+
+3.使用 touch 命令创建一个空的 __init__.py 文件
+
+#touch mymodule/__init__.py
+
+如果 __init__.py 文件内有一个名为 __all__ 的列表, 那么只有在列表内列出的名字将会被公开。
+
+因此如果 mymodule 内的 __init__.py 文件含有一下文件：
+
+[root@dev1 shiyanlou]# cat mymodule/__init__.py
+from mymodule.bars import simplebar
+__all__ = [simplebar,]
+
+$ cd /home/shiyanlou
+$ python3
+>>> from mymodule.bars import simplebar
+>>> import os
+>>> os.getcwd()
+'/home/shiyanlou'
+
+那么导入时将只有 simplebar 可用。
+如果你在 python3 解释器中进行测试，需要确定是在 mymodule,目录同级的目录下执行的 python3;
+如果不在 mymodule 的操作python3，否则会出现 ImportError: No module named 'mymodule' 的报错
+>>> import mymodele.bars
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+ModuleNotFoundError: No module named 'mymodele
+>>> import os
+>>> os.getcwd()
+'/home'
+
+rom mymodule import * 只能工作在模块级别的对象上，试图导入函数或类将导致 syntax error:
+参考资料：https://docs.python.org/3/tutorial/modules.html#packages
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+默认模块：
+
+>>> help()
+
+Welcome to Python 3.6's help utility!
+
+If this is your first time using Python, you should definitely check out
+the tutorial on the Internet at http://docs.python.org/3.6/tutorial/.
+
+Enter the name of any module, keyword, or topic to get help on writing
+Python programs and using Python modules.  To quit this help utility and
+return to the interpreter, just type "quit".
+
+To get a list of available modules, keywords, symbols, or topics, type
+"modules", "keywords", "symbols", or "topics".  Each module also comes
+with a one-line summary of what it does; to list the modules whose name
+or summary contain a given string such as "spam", type "modules spam".
+
+help> modules
+
+Please wait a moment while I gather a list of all available modules...
+IPython             ast                 imghdr              select
+__future__          asynchat            imp                 selectors
+_ast                asyncio             importlib           setuptools
+_asyncio            asyncore            inspect             shelve
+...
+...
+...
+
+上面的例子展示了怎样获得你系统中安装的所有模块的列表。在这里就不粘贴它们了，因为这是一个很大的列表.
+
+help> str
+
+elp on class str in module builtins:
+
+class str(object)
+ |  str(object='') -> str
+ |  str(bytes_or_buffer[, encoding[, errors]]) -> str
+ |  
+ |  Create a new string object from the given object. If encoding or
+ |  errors is specified, then the object must expose a data buffer
+ |  that will be decoded using the given encoding and error handler.
+ |  Otherwise, returns the result of object.__str__() (if defined)
+ |  or repr(object).
+ |  encoding defaults to sys.getdefaultencoding().
+ |  errors defaults to 'strict'.
+ |  
+ |  Methods defined here:
+ |  
+ |  __add__(self, value, /)
+ |      Return self+value.
+ |  
+ |  __contains__(self, key, /)
+ |      Return key in self.
+ |  
+ |  __eq__(self, value, /)
+ |      Return self==value.
+ |  
+ |  __format__(...)
+ |      S.__format__(format_spec) -> str
+
+
+你也能在解释器里使用 help() 函数查找任何模块/类的文档。
+如果你想要知道字符串所有可用的方法，你可以像下面这样做:
+
+>>> help(str)
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+os模块：
+os 模块提供了与操作系统相关的功能：
+>>> import os
+
+getuid() 函数返回当前进程的有效用户id:
+>>> os.getuid()
+0
+
+getpid() 函数返回当前进程的 id。getppid() 返回父进程的 id:
+>>> os.getpid()
+6852
+>>> os.getppid()
+5544
+
+uname() 函数返回识别操作系统的不同信息，在 Linux 中它返回的详细信息可以从 uname -a 命令得到;
+uname() 返回的对象是一个元组，（sysname, nodename, release, version, machine）.
+>>> os.uname()
+posix.uname_result(sysname='Linux', nodename='dev1.localdomain', release='3.10.0-862.14.4.el7.x86_64', version='#1 SMP Wed Sep 26 15:12:11 UTC 2018', machine='x86_64')
+>>> 
+
+getcwd() 函数返回当前工作目录。chdir(path) 则是更改当前目录到 path:
+
+>>> os.getcwd()
+'/home'
+>>> os.chdir("shiyanlou")
+>>> os.getcwd()
+'/home/shiyanlou'
+
+例子：
+让我们使用 os 模块提供的另一个函数来创建一个自己的函数，它将列出给定目录下的所有文件和目录:
+[root@dev1 shiyanlou]# cat mymodule/utils.py 
+import os
+def view_dir(path="."):
+	"""
+	这个函数打印给定目录中的所有文件和目录
+	:args path: 指定目录， 默认为当前目录
+	"""
+	names = os.listdir(path)
+	names.sort()
+	for name in names:
+		print(name, end = " ")
+	print()
+
+
+使用 view_dir() 函数：
+>>> import os
+>>> os.getcwd()
+'/home/shiyanlou'
+>>> import mymodule.utils 		#导入模块
+>>> listdir = mymodule.utils
+>>> listdir.view_dir()			#默认函数返回当前目录及文件
+.bash_history .bash_logout .bash_profile .bashrc Code Desktop Lscpu.py String.txt __pycache__ bin doc download.py ircnicks.txt mymodule prog.py project.log python_code sample.txt sample2.txt shiyan shiyanlou.log zhou.log 
+>>> os.getcwd()
+'/home/shiyanlou'
+>>> listdir.view_dir("mymodule")	# mymodule 下的目录和文件
+__init__.py __pycache__ bars.py utils.py 
+>>> 
+
+os 模块还有许多非常有用的函数，你可以在这里阅读相关内容:
+https://docs.python.org/3/library/os.html
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+requests 模块：
+	是一个第三方 Python 模块：https://2.python-requests.org//zh_CN/latest/
+
+使用 pip3 安装 requests:
+#pip3 install requests
+
+获得一个简单的网页
+你可以使用 get() 方法获取任意一个网页。
+
+>>> import requests
+>>> req = requests.get('https://github.com')
+>>> req.status_code
+200
+>>> req
+<Response [200]>
+req.content 的 text 属性存有服务器返回的 HTML 网页，由于 HTML 文本太长就不在这里贴出来了:
+>>> req.content		
+
+
+使用这个知识，让我们写一个能够从指定的 URL 中下载文件的程序:
+[root@dev1 shiyanlou]# cat download.py 
+#!/usr/bin/env python3
+import requests
+
+def download(rul):
+	"""
+	从指定的 URL 中下载文件并存储到当前目录
+	rul：要下载页面内容的网址
+	"""
+	
+	#检测 url 是否存在
+	try:
+		req = requests.get(url)
+		#txt = req.content
+	except requests.exceptions.MissingSchema:
+		print('Invalid URL "{}"'.format(url))
+
+	#检查是否成功访问了该网站
+	if req.status_code == 403:
+		print("You do not have the authority to access this page.")
+		return
+
+	filename = url.split("/")[-1]
+	with open(filename, 'w') as fobj:
+		fobj.write(req.content.decode("utf-8"))
+
+	print("Download over.")
+
+
+if __name__ == "__main__":
+	url = input("Enter a URL: ")
+	download(url)
+
+测试一下程序：
+[root@dev1 shiyanlou]# ./download.py 
+Enter a URL: http://labfile.oss.aliyuncs.com/courses/596/sample.txt
+Download over.
+[root@dev1 shiyanlou]# ls
+bin   Desktop  download.py   Lscpu.py  prog.py      __pycache__  sample2.txt  shiyan         String.txt
+Code  doc      ircnicks.txt  mymodule  project.log  python_code  sample.txt   shiyanlou.log  zhou.log
+
+
+可以看到目录下已经多了一个 sample.txt 文件。
+
+你可能已经注意到了 if __name__ == '__main__': 这条语句，
+   它的作用是：只有在当前模块名为 __main__ 的时候（即作为脚本执行的时候）才会执行此 if 块内的语句。
+   换句话说，当此文件以模块的形式导入到其它文件中时，if 块内的语句并不会执行。
+
+你可以将上面的程序修改的更友好些。
+举个例子，你可以检查当前目录是否已存在相同的文件名。os.path 模块可以帮助你完成这个：
+网址：https://docs.python.org/3/library/os.path.html#module-os.path
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+argsparse 命令行参数处理模块：
+
+你还记得 ls 命令吗，你可以传递不同的选项作为命令行参数。
+
+这里是用到的模块是 sys，命令行传入的所有参数都可以使用 sys.argv 获取。
+如果希望对参数进行处理可以使用 argparse 模块，阅读这篇 文档 学习：
+网址：https://docs.python.org/3/howto/argparse.html
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+TAB 命令补全：
+
+首先创建一个文件：~/.pythonrc ，文件内写入如下内容：
+[root@dev1 shiyanlou]# cat ~/.pythonrc 
+import rlcompleter, readline
+readline.parse_and_bind('tab: complete')
+
+
+history_file = os.path.expanduser('~/.python_history')
+readline.read_history_file(history_file)
+
+import atexit
+atexit.register(readline.write_history_file, history_file)
+
+
+下一步在 ~/.bashrc 文件中设置 PYTHONSTARTUP 环境变量指向这个文件：
+
+$ export PYTHONSTARTUP=~/.pythonrc
+
+现在，从今以后每当你打开 bash shell，你将会有 TAB 补全和 Python 解释器中代码输入的历史记录：
+
+要在当前 shell 中使用，source 这个 bashrc 文件：
+$ source ~/.bashrc
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+*****总结*****
+本实验了解了什么是模块，模块怎样导入，举例了 os 和 Requests 模块的使用。
+1.Python 吸引人的一点是其有众多的模块可以使用，对于自带模块，可以看看 Python3 的官方文档：
+地址：https://docs.python.org/3/library/index.html
+
+2.对于第三方模块，可以在 PyPI 上找找：
+地址：https://pypi.org/
+
+很多时候你都能找到合适的包帮你优雅的完成部分工作。比如 argparse 模块帮你非常容易的编写用户友好的命令行接口。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
