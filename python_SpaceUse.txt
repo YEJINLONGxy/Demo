@@ -1,0 +1,154 @@
+
+表达式和语句中的空格
+
+不能忍受的情况:
+避免在下列情况中使用多余的空格：
+
+@ 与括号保持紧凑（小括号、中括号、大括号）：
+Yes: spam(ham[1], {eggs: 2})
+No:  spam( ham[ 1 ], { eggs: 2 } )
+
+@ 与后面的逗号、分号或冒号保持紧凑：
+Yes: if x == 4: print x, y; x, y = y, x
+No:  if x == 4 : print x , y ; x , y = y , x
+
+@ 切片内的冒号就像二元操作符一样，任意一侧应该被等同对待（把它当做一个极低优先级的操作）。在一个可扩展的切片中，冒号两侧必须有相同的空格数量。例外：切片参数省略时，空格也省略。
+
+好的：
+ham[1:9], ham[1:9:3], ham[:9:3], ham[1::3], ham[1:9:]
+ham[lower:upper], ham[lower:upper:], ham[lower::step]
+ham[lower+offset : upper+offset]
+ham[: upper_fn(x) : step_fn(x)], ham[:: step_fn(x)]
+ham[lower + offset : upper + offset]
+
+不好的：
+ham[lower + offset:upper + offset]
+ham[1: 9], ham[1 :9], ham[1:9 :3]
+ham[lower : : upper]
+ham[ : upper]
+
+@ 函数名与其后参数列表的左括号应该保持紧凑：
+Yes: spam(1)
+No:  spam (1)
+
+@ 与切片或索引的左括号保持紧凑：
+Yes: dct['key'] = lst[index]
+No:  dct ['key'] = lst [index]
+
+@ 在赋值操作符（或其它）的两侧保持多余一个的空格：
+
+好的：
+x = 1
+y = 2
+long_variable = 3
+
+不好的：
+
+x             = 1
+y             = 2
+long_variable = 3
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+其他建议：
+@ 总是在这些二元操作符的两侧加入一个空格：赋值(=)，增量赋值(+=, -= etc.)，比较(==, <, >, !=, <>, <=, >=, in, not in, is, is not)，布尔运算(and, or, not)。
+
+@ 在不同优先级之间，考虑在更低优先级的操作符两侧插入空格。用你自己的判断力；但不要使用超过一个空格，并且在二元操作符的两侧有相同的空格数。
+
+好的：
+
+i = i + 1
+submitted += 1
+x = x*2 - 1
+hypot2 = x*x + y*y
+c = (a+b) * (a-b)
+
+不好的：
+i=i+1
+submitted +=1
+x = x * 2 - 1
+hypot2 = x * x + y * y
+c = (a + b) * (a - b)
+
+
+@ 不要在关键值参数或默认值参数的等号两边加入空格。
+
+好的：
+def complex(real, imag=0.0):
+    return magic(r=real, i=imag)
+
+不好的：
+def complex(real, imag = 0.0):
+    return magic(r = real, i = imag)
+
+@ 【注：Python 3】带注释的函数定义中的等号两侧要各插入空格。此外，在冒号后用一个单独的空格，也要在表明函数返回值类型的->左右各插入一个空格。
+
+好的：
+def munge(input: AnyStr):
+def munge(sep: AnyStr = None):
+def munge() -> AnyStr:
+def munge(input: AnyStr, sep: AnyStr = None, limit=1000):
+
+不好的：
+def munge(input: AnyStr=None):
+def munge(input:AnyStr):
+def munge(input: AnyStr)->PosInt
+
+@ 打消使用复合语句（多条语句在同一行）的念头。
+
+好的：
+if foo == 'blah':
+    do_blah_thing()
+do_one()
+do_two()
+do_three()
+
+宁可不：
+if foo == 'blah': do_blah_thing()
+do_one(); do_two(); do_three()
+
+
+绝对不：
+if foo == 'blah': do_blah_thing()
+else: do_non_blah_thing()
+
+try: something()
+finally: cleanup()
+
+do_one(); do_two(); do_three(long, argument,
+                             list, like, this)
+
+if foo == 'blah': one(); two(); three()
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+注释:
+
+@ 块注释
+块注释通常用来说明跟随在其后的代码，应该与那些代码有相同的缩进层次。块注释每一行以#起头，并且#后要跟一个空格（除非是注释内的缩进文本）。
+
+@ 行内注释
+有节制的使用行内注释。
+一个行内注释与语句在同一行。行内注释应该至少与语句相隔两个空格。以#打头，#后接一个空格。
+无谓的行内注释如果状态明显，会转移注意力。不要这样做：
+
+x = x + 1                 # Increment x
+但有的时候，这样是有用的：
+
+x = x + 1                 # Compensate for border
+
+
+@文档字符串
+编写良好的文档字符串（a.k.a “docstring”）的约定常驻在 PEP 257
+
+     a.为所有的公共模块、函数、类和方法编写文档字符串。对于非公共的方法，文档字符串是不必要的，但是也应该有注释来说明代码是干什么的。这个注释应该放在方法声明的下面。
+     b.PEP 257 (https://www.python.org/dev/peps/pep-0257/) 描述了良好的文档字符串的约定。注意，文档字符串的结尾"""应该放在单独的一行，例如：
+
+"""Return a foobang
+
+Optional plotz says to frobnicate the bizbaz first.
+"""
+     c.对于单行的文档字符串，把结尾"""放在同一行
+
+
