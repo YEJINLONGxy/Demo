@@ -1,0 +1,228 @@
+
+代码排版：
+
+2.3.1 缩进
+每层缩进使用4个空格。
+
+续行要么与圆括号、中括号、花括号这样的被包裹元素保持垂直对齐，要么放在 Python 的隐线（注：应该是相对于def的内部块）内部，或者使用悬挂缩进。使用悬挂缩进的注意事项：第一行不能有参数，用进一步的缩进来把其他行区分开。
+
+好的：
+
+# Aligned with opening delimiter.
+foo = long_function_name(var_one, var_two,
+                         var_three, var_four)
+
+# More indentation included to distinguish this from the rest.
+def long_function_name(
+        var_one, var_two, var_three,
+        var_four):
+    print(var_one)
+
+# Hanging indents should add a level.
+foo = long_function_name(
+    var_one, var_two,
+    var_three, var_four)
+
+
+不好的：
+
+# Arguments on first line forbidden when not using vertical alignment.
+foo = long_function_name(var_one, var_two,
+    var_three, var_four)
+
+# Further indentation required as indentation is not distinguishable.
+def long_function_name(
+    var_one, var_two, var_three,
+    var_four):
+    print(var_one)
+
+
+当 if 语句的条件部分足够长，需要将它写入到多个行，值得注意的是两个连在一起的关键字（i.e. if），添加一个空格，给后续的多行条件添加一个左括号形成自然地4空格缩进。如果和嵌套在 if 语句内的缩进代码块产生了视觉冲突，也应该被自然缩进4个空格。这份增强建议书对于怎样（或是否）把条件行和 if 语句的缩进块在视觉上区分开来是没有明确规定的。可接受的情况包括，但不限于：
+
+
+# No extra indentation.
+if (this_is_one_thing and
+    that_is_another_thing):
+    do_something()
+
+# Add a comment, which will provide some distinction in editors
+# supporting syntax highlighting.
+if (this_is_one_thing and
+    that_is_another_thing):
+    # Since both conditions are true, we can frobnicate.
+    do_something()
+
+# Add some extra indentation on the conditional continuation line.
+if (this_is_one_thing
+        and that_is_another_thing):
+    do_something()
+
+
+在多行结构中的右圆括号、右中括号、右大括号应该放在最后一行的第一个非空白字符的正下方，如下所示：
+
+my_list = [
+    1, 2, 3,
+    4, 5, 6,
+    ]
+result = some_function_that_takes_arguments(
+    'a', 'b', 'c',
+    'd', 'e', 'f',
+    )
+
+或者放在多行结构的起始行的第一个字符正下方，如下：
+
+my_list = [
+    1, 2, 3,
+    4, 5, 6,
+]
+result = some_function_that_takes_arguments(
+    'a', 'b', 'c',
+    'd', 'e', 'f',
+)
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+制表符还是空格？
+
+空格是首选的缩进方法。
+
+制表符（Tab）应该被用在那些以前就使用了制表符缩进的地方。
+
+Python 3 不允许混合使用制表符和空格来缩进代码。
+
+混合使用制表符和空格缩进的 Python 2 代码应该改为只使用空格。
+
+当使用-t选项来调用 Python 2 的命令行解释器的时候，会对混合使用制表符和空格的代码发出警告。当使用-tt选项的时候，这些警告会变成错误。这些选项是强烈推荐的！
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+每行最大长度:
+
+限制每行的最大长度为79个字符。
+
+对于那些约束很少的文本结构（文档字符串或注释）的长块，应该限制每行长度为72个字符。
+
+限制编辑窗口的宽度使并排打开两个窗口成为可能，使用通过代码审查工具时，也能很好的通过相邻列展现不同代码版本。
+
+一些工具的默认换行设置打乱了代码的可视结构，使其更难理解。限制编辑器窗口宽为80来避免自动换行，即使有些编辑工具在换行的时候会在最后一列放一个标识符。一些基于 Web 的工具可能根本就不提供动态换行。
+
+一些团队更倾向于长的代码行。对于达成了一致意见来统一代码的团队而言，把行提升到80~100的长度是可接受的（实际最大长度为99个字符），注释和文档字符串的长度还是建议在72个字符内。
+
+Python 标准库是非常专业的，限制最大代码长度为79个字符（注释和文档字符串最大长度为72个字符）。
+
+首选的换行方式是在括号（小中大）内隐式换行（非续行符\）。长行应该在括号表达式的包裹下换行。这比反斜杠作为续行符更好。
+
+反斜杠有时仍然适用。例如，多个很长的with语句不能使用隐式续行，因此反斜杠是可接受的。
+
+with open('/path/to/some/file/you/want/to/read') as file_1, \
+     open('/path/to/some/file/being/written', 'w') as file_2:
+    file_2.write(file_1.read())
+
+(见前面关于多行if语句的讨论来进一步思考这种多行with语句该如何缩进)
+	网址：https://www.python.org/dev/peps/pep-0008/#multiline-if-statements
+
+另一种使用反斜杠续行的案例是assert语句
+
+确保续行的缩进是恰到好处的。遇到二元操作符(%)，首选的断行位置是操作符的后面而不是前面。这有一些例子：
+
+class Rectangle(Blob):
+
+    def __init__(self, width, height,
+                 color='black', emphasis=None, highlight=0):
+        if (width == 0 and height == 0 and
+                color == 'red' and emphasis == 'strong' or
+                highlight > 100):
+            raise ValueError("sorry, you lose")
+        if width == 0 and height == 0 and (color == 'red' or
+                                           emphasis is None):
+            raise ValueError("I don't think so -- values are %s, %s" %
+                             (width, height))
+        Blob.__init__(self, width, height,
+                      color, emphasis, highlight)
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+空行:
+顶级函数和类定义上下使用两个空行分隔。
+
+类内的方法定义使用一个空行分隔。
+
+可以使用额外的空行（有节制的）来分隔相关联的函数组。在一系列相关联的单行代码中空行可以省略（e.g. 一组虚拟的实现）。
+
+在函数中使用空白行（有节制的）来表明逻辑部分。
+
+Python 接受使用换页符（i.e. Ctrl+L）作为空格；许多工具都把Ctrl+L作为分页符，因此你可以用它们把你的文件中相似的章节分页。注意，一些编辑器和基于 Web 的代码查看工具可能不把Ctrl+L看做分页符，而是在这个位置放一个其它的符号。
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+ 源文件编码
+在核心 Python 发布版中的代码应该总是使用UTF-8编码（或者在 Python 2 中使用ASCII）。
+
+使用ASCII(Python 2)或UTF-8(Python 3)的文件不需要有编码声明（注：它们是默认的）。
+
+在标准库中，非缺省的编码应该仅仅用于测试目的，或者注释或文档字符串中的作者名包含非ASCII码字符；否则，优先使用\x、\u、\U或者\N来转义字符串中的非ASCII数据。
+
+对于 Python 3.0 和之后的版本，以下是有关标准库的政策（见PEP 3131）：所有 Python 标准库中的标识符必须使用只含ASCII的标识，并且应该使用英语单词只要可行（在多数情况下，缩略语和技术术语哪个不是英语）。此外，字符串和注释也必须是ASCII。仅有的例外是：(a)测试用例测试非ASCII特性时，(b)作者名。作者的名字不是基于拉丁字母的必须提供他们名字的拉丁字母音译。
+
+面向全球用户的开源项目，鼓励采取相似的政策
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+导入包:
+
+1.import不同的模块应该独立一行，如:
+
+好的：
+import os
+import sys
+
+不好的：
+import os, sys
+
+这样也是可行的：
+from subprocess import Popen, PIPE
+
+2.import语句应该总是放在文件的顶部，在模块注释和文档字符串之下，在模块全局变量和常量之前。
+
+import语句分组顺序如下：
+
+	a.导入标准库模块
+	b.导入相关第三方库模块
+	c.导入当前应用程序/库模块
+	d.每组之间应该用空行分开。
+
+	然后用__all__声明本文件内的模块
+
+3.绝对导入是推荐的，它们通常是更可读的，并且在错误的包系统配置（如一个目录包含一个以os.path结尾的包）下有良好的行为倾向（至少有更清晰的错误消息）:
+
+import mypkg.sibling
+from mypkg import sibling
+from mypkg.sibling import example
+
+当然，相对于绝对导入，相对导入是个可选替代，特别是处理复杂的包结构时，绝对导入会有不必要的冗余：
+
+from . import sibling
+from .sibling import example
+
+标准库代码应该避免复杂的包结构，并且永远使用绝对导入。
+
+应该从不使用隐式的相对导入，而且在 Python 3 中已经被移除.
+
+4.从一个包含类的模块导入类时，这样写通常是可行的：
+
+from myclass import MyClass
+from foo.bar.yourclass import YourClass
+
+如果上面的方式会本地导致命名冲突，则这样写：
+
+import myclass
+import foo.bar.yourclass
+
+ 以myclass.MyClass和foo.bar.yourclass.YourClass这样的方式使用
+
+5.应该避免通配符导入（from import *），这会使名称空间里存在的名称变得不清晰，迷惑读者和自动化工具。这里有一个可辩护的通配符导入用例，，重新发布一个内部接口作为公共 API 的一部分（例如，使用纯 Python 实现一个可选的加速器模块的接口，但并不能预知这些定义会被覆盖）
+
+
+
+
+
