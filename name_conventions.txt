@@ -1,0 +1,329 @@
+命名约定
+
+Python 库的命名规则有点混乱，因此我们永远也不会使其完全一致的 – 不过，这里有一些当前推荐的命名标准。新的模块和包（包括第三方框架）应该按照这些标准来命名，但是已存在库有不同的风格，内部一致性是首选。
+
+覆盖原则
+API 里对用户可见的公共部分应该遵循约定，反映的是使用而不是实现。
+
+规定：命名约定
+有许多不同的命名风格。这有助于识别正在使用的命名风格，独立于它们的用途。
+
+下面的命名风格通常是有区别的：
+
+	@ b (一个小写字母)
+	@ B (一个大写字母)
+	@ lowercase
+	@ lower_case_with_underscores
+	@ UPPERCASE
+	@ UPPER_CASE_WITH_UNDERSCORES
+	@ CapitalizedWords (又叫 CapWords，或者 CamelCase(骆驼命名法) – 如此命名因为字母看起来崎岖不平[3]。有时候也叫 StudlyCaps。
+ 
+ 注意：在 CapWords 使用缩略语时，所有缩略语的首字母都要大写。因此HTTPServerError比HttpServerError要好。
+
+	@ mixedCase (和上面不同的是首字母小写)
+   	@ Capitalized_Words_With_Underscores (丑陋无比！)
+
+也有种风格用独一无二的短前缀来将相似的命名分组。在 Python 里用的不是很多，但是为了完整性被提及。例如，os.stat()函数返回一个元组，通常有像st_mode，st_size，st_mtime等名字。（强调与 POSIX 系统调用的字段结构一致，有助于程序员对此更熟悉）
+
+X11 库的所有公共函数都用 X 打头。在 Python 中这种风格被认为是不重要的，因为属性和方法名的前缀是一个对象，函数名的前缀为一个模块名。
+
+此外，下面的特许形式用一个前导或尾随的下划线进行识别（这些通常可以和任何形式的命名约定组合）：
+
+	@ _single_leading_underscore ：仅内部使用的标识，如from M import *不会导入像这样一下划线开头的对象。
+	@ single_trailing_underscore_ : 通常是为了避免与 Python 规定的关键字冲突，如Tkinter.Toplevel(master, class_='ClassName')。
+	@ double_leading_underscore : 命名一个类属性，调用的时候名字会改变（在类FooBar中，`boo变成了_FooBar__boo`；见下）。
+	@ double_leading_and_trailing_underscore ：”魔术”对象或属性，活在用户控制的命名空间里。例如，__init__，__import__和__file__。永远不要像这种方式命名；只把它们作为记录。
+
+
+规定：命名约定
+
+1.应该避免的名字
+永远不要使用单个字符l(小写字母 el)，O(大写字母 oh)，或I(大写字母 eye)作为变量名。
+
+在一些字体中，这些字符是无法和数字1和0区分开的。试图使用l时用L代替。
+
+2.包和模块名
+模块名应该短，且全小写。如果能改善可读性，可以使用下划线。Python 的包名也应该短，全部小写，但是不推荐使用下划线。
+
+因为模块名就是文件名，而一些文件系统是大小写不敏感的，并且自动截断长文件名，所以给模块名取一个短小的名字是非常重要的 – 在 Unix 上这不是问题，但是把代码放到老版本的 Mac， Windows，或者 DOS 上就可能变成一个问题了。
+
+用 C/C++ 给 Python 写一个高性能的扩展(e.g. more object oriented)接口的时候，C/C++ 模块名应该有一个前导下划线
+
+
+3.类名:
+类名通常使用 CapWords 约定。
+
+The naming convention for functions may be used instead in cases where the interface is documented and used primarily as a callable.
+
+注意和内建名称的区分开：大多数内建名称是一个单独的单词（或两个单词一起），CapWords 约定只被用在异常名和内建常量上。
+
+4.异常名
+因为异常应该是类，所以类名约定在这里适用。但是，你应该用Error作为你的异常名的后缀（异常实际上是一个错误）。
+
+5.全局变量名
+（我们希望这些变量仅仅在一个模块内部使用）这个约定有关诸如此类的变量。
+
+若被设计的模块可以通过from M import *来使用，它应该使用__all__机制来表明那些可以可导出的全局变量，或者使用下划线前缀的全局变量表明其是模块私有的。
+
+6.函数名
+函数名应该是小写的，有必要的话用下划线来分隔单词提高可读性。
+
+混合大小写仅仅在上下文都是这种风格的情况下允许存在（如thread.py），这是为了维持向后兼容性。
+
+7.函数和方法参数
+总是使用self作为实例方法的第一个参数。
+
+总是使用cls作为类方法的第一个参数。
+
+如果函数参数与保留关键字冲突，通常最好在参数后面添加一个尾随的下划线，而不是使用缩写或胡乱拆减。因此class_比clss要好。（或许避免冲突更好的方式是使用近义词）
+
+8.方法名和实例变量
+用函数名的命名规则：全部小写，用下划线分隔单词提高可读性。
+
+用一个且有一个前导的下划线来表明非公有的方法和实例变量。
+
+为了避免与子类变量或方法的命名冲突，用两个前导下划线来调用 Python 的命名改编规则。
+
+Python 命名改编通过添加一个类名：如果类Foo有一个属性叫__a，它不能被这样Foo.__a访问（执着的人可以通过这样Foo._Foo__a来访问）通常，双前导的下划线应该仅仅用来避免与其子类属性的命名冲突。
+
+注意：这里有一些争议有关__names的使用（见下文）。
+
+9.常量
+常量通常是模块级的定义，全部大写，单词之间以下划线分隔。例如MAX_OVERFLOW和TOTAL。
+
+10.继承的设计
+总是决定一个类的方法和变量（属性）是应该公有还是非公有。如果有疑问，选择非公有；相比把共有属性变非公有，非公有属性变公有会容易得多。
+
+公有属性是你期望给那些与你的类无关的客户端使用的，你应该保证不会出现不向后兼容的改变。非公有的属性是你不打算给其它第三方使用的；你不需要保证非公有的属性不会改变甚至被移除也是可以的。
+
+我们这里不适用“私有”这个术语，因为在 Python 里没有真正的私有属性（一般没有不必要的工作量）。
+
+另一种属性的分类是“子类 API”的一部分（通常在其它语言里叫做“Protected”）。一些类被设计成被继承的，要么扩展要么修改类的某方面行为。设计这样一个类的时候，务必做出明确的决定，哪些是公有的，其将会成为子类 API 的一部分，哪些仅仅是用于你的基类的。
+
+
+处于这种考虑，给出 Pythonic 的指南：
+
+	@ 共有属性不应该有前导下划线。
+	@ 如果你的公有属性与保留关键字发生冲突，在你的属性名后面添加一个尾随的下划线。这比使用缩写或胡乱拆减要好。（尽管这条规则，已知某个变量或参数可能是一个类情况下，cls是首选的命名，特别是作为类方法的第一个参数）
+
+注意一：见上面推荐的类方法参数命名方式。
+
+	@ 对于简单的公有数据属性，最好的方式是暴露属性名，不要使用复杂的访问属性/修改属性的方法。记住，Python 提供了捷径去提升特性，如果你发现简单的数据属性需要增加功能行为。在这种情况下，使用properties把功能实现隐藏在简单的数据属性访问语法下面。
+
+注意一：properties仅仅在新式类下工作。  
+注意二：尽量保持功能行为无边际效应，然而如缓存有边际效应也是好的   
+注意三：避免为计算开销大的操作使用properties；属性标记使调用者相信这样来访问（相对来说）是开销很低的。
+
+	@ 如果你的类是为了被继承，你有不想让子类使用的属性，给属性命名时考虑给它们加上双前导下划线，不要加尾随下划线。这会调用 Python 的名称重整算法，把类名加在属性名前面。避免了命名冲突，当子类不小心命名了和父类属性相同名称的时候。
+
+注意一：注意只是用了简单的类名来重整名字，因此如果子类和父类同名的时候，你仍然有能力避免冲突。
+
+注意二：命名重整有确定的用途，例如调试和__getattr__()，就不太方便。命名重整算法是有据可查的，易于手动执行。
+
+注意三：不是每个人都喜欢命名重整。尽量平衡名称的命名冲突与面向高级调用者的潜在用途。
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+公共和内部接口:
+保证所有公有接口的向后兼容性。用户能清晰的区分公有和内部接口是重要的。
+
+文档化的接口考虑公有，除非文档明确的说明它们是暂时的，或者内部接口不保证其的向后兼容性。所有的非文档化的应该被假设为非公开的。
+
+为了更好的支持内省，模块应该用__all__属性来明确规定公有 API 的名字。设置__all__为空list表明模块没有公有 API。
+
+甚至与__all__设置相当，内部接口（包、模块、类、函数、属性或者其它的名字）应该有一个前导的下划线前缀。
+
+被认为是内部的接口，其包含的任何名称空间（包、模块或类）也被认为是内部的。
+
+导入的名称应始终视作一个实现细节。其它模块不能依赖间接访问这些导入的名字，除非它们是包含模块的 API 明确记载的一部分，例如os.path或一个包的__init__模块暴露了来自子模块的功能
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+程序编写建议:
+
+@ 代码的编写方式不能对其它 Python 的实现（PyPy、Jython、IronPython、Cython、Psyco，诸如此类的）不利。
+    例如，不要依赖于 CPython 在字符串拼接时的优化实现，像这种语句形式a += b和a = a + b。即使是 CPython（仅对某些类型起作用） 这种优化也是脆弱的，不是在所有的实现中都不使用引用计数。在库中性能敏感的部分，用''.join形式来代替。这会确保在所有不同的实现中字符串拼接是线性时间的。
+
+@ 比较单例，像None应该用is或is not，从不使用==操作符。
+     当你的真正用意是if x is not None的时候，当心if x这样的写法 – 例如，测试一个默认值为None的变量或参数是否设置成了其它值，其它值可能是那些布尔值为 false 的类型（如空容器）。
+
+@ 用is not操作符而不是not ... is。虽然这两个表达式是功能相同的，前一个是更可读的，是首选。
+
+好的:
+if foo is not None:
+
+不好的:
+if not foo is None:
+
+@ 用富比较实现排序操作的时候，实现所有六个比较操作符（ __eq__ 、 __ne__ 、 __lt__ , __le__, __gt__ , __ge__）是更好的，而不是依赖其它仅仅运用一个特定比较的代码
+
+  为了最大限度的减少工作量，functools.total_ordering()装饰器提供了一个工具去生成缺少的比较方法。
+
+   PEP 207(https://www.python.org/dev/peps/pep-0207/) 说明了 Python 假定的所有反射规则。因此，解释器可能交换y > x与x < y，y >= x与x <= y，也可能交换x == y和x != y。sort()和min()操作肯定会使用<操作符，max()函数肯定会使用>操作符。当然，最好是六个操作符都实现，以便不会在其它上下文中有疑惑。
+
+@ 始终使用def语句来代替直接绑定了一个lambda表达式的赋值语句。
+
+好的:
+def f(x): return 2*x
+
+不好的:
+f = lambda x: 2*x
+
+    第一种形式意味着函数对象的 __name__属性值是 'f'而不是 '<lambda>' 。通常这对异常追踪和字符串表述是更有用的。使用赋值语句消除的唯一好处，lambda表达式可以提供一个显示的def语句不能提供的，如，lambda能镶嵌在一个很长的表达式里。
+
+
+@ 异常类应派生自Exception而不是BaseException。直接继承自BaseException是为Exception保留的，如果从BaseException继承，捕获到的错误总是错的。
+
+   设计异常结构层次，应基于那些可能出现异常的代码，而不是在出现异常后的。编码的时候，以回答“出了什么问题？”为目标，而不是仅仅指出“这里出现了问题”（见 PEP 3151(https://www.python.org/dev/peps/pep-3151/) 一个内建异常结构层次的例子）。
+
+   类的命名约定适用于异常，如果异常类是一个错误，你应该给异常类加一个后缀Error。用于非本地流程控制或者其他形式的信号的非错误异常不需要一个特殊的后缀。
+
+@ 适当的使用异常链。在 Python 3 里，raise X from Y用于表明明确的替代者，不丢失原有的回溯信息。
+
+   有意替换一个内部的异常时（在 Python 2 用raise X，Python 3.3+ 用raise X from None），确保相关的细节全部转移给了新异常（例如，把KeyError变成AttributeError时保留属性名，或者把原始异常的错误信息嵌在新异常里）。
+
+@ 在 Python 2 里抛出异常时，用raise ValueError('message')代替旧式的raise ValueError, 'message'。
+
+    在 Python 3 之后的语法里，旧式的异常抛出方式是非法的。
+
+    使用括号形式的异常意味着，当你传给异常的参数过长或者包含字符串格式化时，你就不需要使用续行符了，这要感谢括号！
+
+@ 捕获异常时，尽可能使用明确的异常，而不是用一个空的except:语句。
+
+例如，用：
+
+try:
+    import platform_specific_module
+except ImportError:
+    platform_specific_module = None
+
+
+
+Python 3 只支持这种语法，避免与基于逗号的旧式语法产生二义性。
+
+@ 捕获操作系统错误时，最好使用 Python 3.3 里引进的明确的异常结构层次，而不是自省的errno值。
+
+@ 此外，对于所有的try/except语句来说，限制try里面有且仅有绝对必要的代码。在强调一次，这能避免屏蔽错误。
+
+好的：
+try:
+    value = collection[key]
+except KeyError:
+    return key_not_found(key)
+else:
+    return handle_value(value)
+
+不好的：
+try:
+    # Too broad!
+    return handle_value(collection[key])
+except KeyError:
+    # Will also catch KeyError raised by handle_value()
+    return key_not_found(key)
+
+
+@ 当资源是本地的特定代码段，用with语句确保其在使用后被立即干净的清除了，try/finally也是也接受的。
+
+@ 当它们做一些除了获取和释放资源之外的事的时候，上下文管理器应该通过单独的函数或方法调用。例如：
+
+好的：
+with conn.begin_transaction():
+    do_stuff_in_transaction(conn)
+
+不好的：
+with conn:
+    do_stuff_in_transaction(conn)
+
+    第二个例子没有提供任何信息来表明__enter__和__exit__方法在完成一个事务后做了一些除了关闭连接以外的其它事。在这种情况下明确是很重要的。
+
+@ 坚持使用return语句。函数内的return语句都应该返回一个表达式，或者None。如果一个return语句返回一个表达式，另一个没有返回值的应该用return None清晰的说明，并且在一个函数的结尾应该明确使用一个return语句（如果有返回值的话）。
+
+好的：
+def foo(x):
+    if x >= 0:
+        return math.sqrt(x)
+    else:
+        return None
+
+def bar(x):
+    if x < 0:
+        return None
+    return math.sqrt(x)
+
+不好的：
+def foo(x):
+    if x >= 0:
+        return math.sqrt(x)
+
+def bar(x):
+    if x < 0:
+        return
+    return math.sqrt(x)
+
+
+@ 用字符串方法代替字符串模块。
+
+   字符串方法总是更快，与 unicode 字符串共享 API。如果需要向后兼容性覆盖这个规则，需要 Python 2.0 以上的版本
+
+@用''.startswith()和''.endswith()代替字符串切片来检查前缀和后缀。
+
+    startswith()和endswith()是更简洁的，不容易出错的。例如：
+
+Yes: if foo.startswith('bar'):
+No:  if foo[:3] == 'bar':
+
+对象类型的比较应该始终使用isinstance()而不是直接比较。
+
+Yes: if isinstance(obj, int):
+No:  if type(obj) is type(1):
+
+    当比较一个对象是不是字符串时，记住它有可能也是一个 unicode 字符串！在 Python 2 里面，str和unicode有一个公共的基类叫basestring，因此你可以这样做：
+
+if isinstance(obj, basestring):
+
+  注意，在 Python 3 里面，unicode和basestring已经不存在了（只有str），byte对象不再是字符串的一种（被一个整数序列替代）。
+
+@ 对于序列（字符串、列表、元组）来说，空的序列为False：
+
+好的：
+if not seq:
+if seq:
+
+不好的：
+if len(seq):
+if not len(seq):
+
+
+@ 不要让字符串对尾随的空格有依赖。这样的尾随空格是视觉上无法区分的，一些编辑器（or more recently, reindent.py）会将其裁剪掉。
+
+@ 不要用==比较True和False。
+
+Yes:   if greeting:
+No:    if greeting == True:
+Worse: if greeting is True:
+
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++
+
+总结
+即使内容有点多，但每一个 Python 开发者都应该尽量遵守 PEP8 规范：
+
+参考文献
+[1]：PEP 7 , Style Guide for C Code, van Rossum
+
+[2]：Barry's GNU Mailman style guide http://barry.warsaw.us/software/STYLEGUIDE.txt
+
+[3]：http://www.wikipedia.com/wiki/CamelCase
+
+版权说明
+This document has been placed in the public domain.
+
+Source: https://hg.python.org/peps/file/tip/pep-0008.tx
+
+
+
+
