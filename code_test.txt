@@ -1,0 +1,429 @@
+
+编写测试检验应用程序所有不同的功能。每一个测试集中在一个关注点上验证结果是不是期望的。定期执行测试确保应用程序按预期的工作。当测试覆盖很大的时候，通过运行测试你就有自信确保修改点和新增点不会影响应用程序:
+
+知识点:
+	@ 单元测试概念
+  	@ 使用 unittest 模块
+	@ 测试用例的编写
+	@ 异常测试
+	@ 测试覆盖率概念
+ 	@ 使用 coverage 模块
+
+
+测试范围:
+ 	如果可能的话，代码库中的所有代码都要测试。但这取决于开发者，如果写一个健壮性测试是不切实际的，你可以跳过它
+。
+	就像 Nick Coghlan（Python 核心开发成员） 在访谈里面说的：有一个坚实可靠的测试套件，你可以做出大的改动，并确信外部可见行为保持不变。
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+单元测试:
+
+这里引用维基百科的介绍：
+
+在计算机编程中，单元测试（英语：Unit Testing）又称为模块测试, 是针对程序模块（软件设计的最小单位）来进行正确性检验的测试工作。程序单元是应用的最小可测试部件。在过程化编程中，一个单元就是单个程序、函数、过程等；对于面向对象编程，最小单元就是方法，包括基类（超类）、抽象类、或者派生类（子类）中的方法。
+
+单元测试模块
+在 Python 里我们有 unittest 这个模块来帮助我们进行单元测试:
+
+-----------------------------------------------------------
+[root@dev1 shiyanlou]# cat factorial.py 
+#!/usr/bin/env python3
+
+import sys
+
+def fact(n):
+	"""
+	阶乘函数
+
+	:arg n : 数字
+	:returns: n 的阶乘
+
+	"""
+
+	if n == 0:
+		return 1
+	return n * fact(n -1)
+
+
+def div(n):
+
+	"""
+	只是做除法
+	"""
+
+	res = 10 / n
+	return res
+
+
+def main(n):
+	res = fact(n)
+	print(res)
+
+
+if __name__ == '__main__':
+	if len(sys.argv) > 1:
+		main(int(sys.argv[1]))
+
+
+运行程序：
+[root@dev1 shiyanlou]# ./factorial.py 5
+120
+-----------------------------------------------------------
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+第一个测试用例:
+测试哪个函数？
+正如你所看到的， fact(n) 这个函数执行所有的计算，所以我们至少应该测试这个函数。
+编辑 /home/shiyanlou/factorial_test.py 文件，代码如下：
+
+[root@dev1 shiyanlou]# cat factorial_test.py 
+#!/usr/bin/env python3
+
+import unittest
+from factorial import fact
+
+class TestFactorial(unittest.TestCase):
+	"""
+	我们的基本测试类
+	"""
+
+	def test_fact(self):
+		"""
+		实际测试
+		任何以 `test_` 开头的方法都被视作测试用例
+		"""
+		
+		res = fact(5)
+		self.assertEqual(res, 120)
+		#self.assertEqual(res, 121)
+
+if __name__ == '__main__':
+	unittest.main()
+
+
+运行测试：
+[root@dev1 shiyanlou]# python factorial_test.py 
+.
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+OK
+
+
+说明：
+我们首先导入了 unittest 模块，然后测试我们需要测试的函数。
+测试用例是通过子类化 unittest.TestCase 创建的。
+现在我们打开测试文件并且把 120 更改为 121，然后看看会发生什么？
+
+[root@dev1 shiyanlou]# vim factorial_test.py
+[root@dev1 shiyanlou]# python factorial_test.py 
+F
+======================================================================
+FAIL: test_fact (__main__.TestFactorial)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "factorial_test.py", line 19, in test_fact
+    self.assertEqual(res, 121)
+AssertionError: 120 != 121
+
+----------------------------------------------------------------------
+Ran 1 test in 0.001s
+
+FAILED (failures=1)
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+ 各类 assert 语句:
+
+Method				Checks that		New in
+assertEqual(a, b)		a == b	
+assertNotEqual(a, b)		a != b	
+assertTrue(x)			bool(x) is True	
+assertFalse(x)			bool(x) is False	
+assertIs(a, b)			a is b			2.7
+assertIsNot(a, b)		a is not b		2.7
+assertIsNone(x)			x is None		2.7
+assertIsNotNone(x)		x is not None		2.7
+assertIn(a, b)			a in b			2.7
+assertNotIn(a, b)		a not in b		2.7
+assertIsInstance(a, b)		isinstance(a, b)	2.7
+assertNotIsInstance(a, b)	not isinstance(a, b)	2.7
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+异常测试:
+如果我们在 factorial.py 中调用 div(0)，我们能看到异常被抛出。
+
+我们也能测试这些异常，就像这样：
+
+self.assertRaises(ZeroDivisionError, div, 0)
+
+完整代码：
+
+#!/usr/bin/env python3
+
+import unittest
+from factorial import fact
+
+class TestFactorial(unittest.TestCase):
+	"""
+	我们的基本测试类
+	"""
+
+	def test_fact(self):
+		"""
+		实际测试
+		任何以 `test_` 开头的方法都被视作测试用例
+		"""
+		
+		res = fact(5)
+		self.assertEqual(res, 120)
+		#self.assertEqual(res, 121)
+
+	def test_error(self):
+		"""
+		测试由运行时错误引起的异常
+		"""
+
+		self.assertRaise(ZeroDivisionError, div, 0)
+
+if __name__ == '__main__':
+	unittest.main()
+
+
+运行程序：
+	
+只显示报错
+[root@dev1 shiyanlou]# python factorial_test.py 
+E.
+======================================================================
+ERROR: test_error (__main__.TestFactorial)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "factorial_test.py", line 26, in test_error
+    self.assertRaise(ZeroDivisionError, div, 0)
+AttributeError: 'TestFactorial' object has no attribute 'assertRaise'
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.000s
+
+FAILED (errors=1)
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+案例：
+函数分析并打印挂载详细信息:
+
+mounttab.py 中只有一个 mount_details() 函数
+
+[root@dev1 shiyanlou]# cat mounttab.py 
+#!/urs/bin/env python3
+
+import os
+
+def mount_details():
+	"""
+	打印挂载详细信息
+	"""
+
+	if os.path.exists("/proc/mounts"):
+		#with open("/proc/mounts") as fd:
+		#	fd = read(fd)  	#不能这样读取数据，否则 for 循环时会每个字母字符单个循环打印
+		
+		fd = open("/proc/mounts")
+		for line in fd:
+			line = line.strip()	# 去除左右边的空格
+			words = line.split()	# 对字符串进行分割，默认空格分割
+			print('{} on {} type {}'.format(words[0], words[1], words[2]))
+			if len(words) > 5:
+				print('()'.format(' '.join(words[3:-2])))
+			else:
+				print()
+		fd.close()
+
+if __name__ == "__main__":
+	mount_details()
+
+
+#++++++++++++++++ 扩展 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# 
+#>>> path
+#'/proc/mounts'
+#>>> fd = open(path)
+#>>> fd			#返回的是一个对象
+#<_io.TextIOWrapper name='/proc/mounts' mode='r' encoding='UTF-8'>
+#>>> fd.close()
+
+#案例中打开文件方式
+#>>> path = "/proc/mounts"
+#>>> with open(path) as fd:
+#	fd = fd.read()
+#>>> fd 
+#'rootfs / rootfs rw 0 0\nsysfs /sys sysfs rw,nosuid,nodev,noexec,relatime 0 0\nproc /proc proc rw,nosuid,nodev,noexec,relatime 0 0\ndevtmpfs /dev devtmpfs rw,nosuid,size=1919512k,nr_inodes=479878,mode=755 0 0\nsecurityfs /sys/kernel/security securityfs rw,nosuid,nodev,noexec,relatime 0 0\ntmpfs /dev/shm tmpfs rw,nosuid,nodev 0 0\ndevpts /dev/pts devpts rw,nosuid,noexec,relatime,gid=5,mode=620,ptmxmode=000 0 0\ntmpfs /run tmpfs rw,nosuid,nodev,mode=755 0 0\ntmpfs /sys/fs/cgroup tmpfs ro,nosuid,nodev,noexec,mode=755 0 0\n'
+
+#>>>for line in fd:
+#...	print(line) 
+#r
+#o
+#o		#打印出的是单个字符，不符处理方式，所有不能用
+######## or ###################
+#使用 with 结合 for 一起用
+#>>> with open(path) as fd:
+#...     for line in fd:
+#...             line = line.strip()
+#...             print(line)
+#...             words = line.split()
+#...             print(words)
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+重构 mounttab.py
+
+现在我们在 mounttab2.py 中重构了上面的代码并且有一个我们能容易的测试的新函数 parse_mounts()：
+
+[root@dev1 shiyanlou]# cat mounttab2.py 
+#!/urs/bin/env python3
+
+import os
+
+def parse_mounts():
+	"""
+	分析 /proc/mounts 并返回元组的列表
+	"""
+	result = []
+	if os.path.exists("/proc/mounts"):
+		fd = open("/proc/mounts")
+		for line in fd:
+			line = line.strip()	# 去除左右边的空格
+			words = line.split()	# 对字符串进行分割，默认空格分割
+			if len(words) > 5:
+				# 4个元组元素
+				res = (words[0], words[1], words[2], '({})'.format(' '.join(words[3:-2])))
+			else:
+				res = (words[0], words, words[2])
+			result.append(res)
+		fd.close()
+	return	result
+
+def mount_details():
+	"""
+	打印挂在详情信息
+	"""
+	result = parse_mounts()
+	for line in result:
+		if len(line) == 4:
+			print('{} on {} type {} {}'.format(*line))	# * 对元组拆封
+		else:
+			print('{} on {} type {}'.format(*line))
+
+if __name__ == "__main__":
+	mount_details()
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+同样我们测试代码，编写 mounttest.py 文件：
+
+[root@dev1 shiyanlou]# cat mounttest.py 
+#!/usr/bin/env python3
+import unittest
+from mounttab2 import parse_mounts
+
+class TestMount(unittest.TestCase):
+	"""
+	我们的基本测试类
+	"""
+	
+	def test_parsemount(self):
+		"""
+		实际测试
+		任何以 `test_` 开头的方法都被视作测试用例
+	
+		"""
+		result = parse_mounts()
+		self.assertIsInstance(result, list)
+		self.assertIsInstance(result[0], tuple)
+
+	def test_roottext4(self):
+		"""
+		测试找出根文件系统
+		"""
+		result = parse_mounts()
+		for line in result:
+			if line[1] == '/' and line[2] != 'rootfs':
+				self.assertEqual(line[2], 'ext4')
+
+
+if __name__ == "__main__":
+	unittest.main()
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+运行程序:
+[root@dev1 shiyanlou]# python mounttest.py 
+.F
+======================================================================
+FAIL: test_roottext4 (__main__.TestMount)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "mounttest.py", line 27, in test_roottext4
+    self.assertEqual(line[2], 'ext4')
+AssertionError: 'xfs' != 'ext4'
+- xfs
++ ext4
+
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.001s
+
+FAILED (failures=1)
+
+查看到该服务器的根 '/' 挂载的不是 ext4
+
+[root@dev1 shiyanlou]# python mounttab2.py  | grep xfs
+/dev/mapper/centos-root on / type xfs (rw,relatime,attr2,inode64,noquota)
+
+修改成 xfs 再次测试：
+[root@dev1 shiyanlou]# python mounttest.py 
+..
+----------------------------------------------------------------------
+Ran 2 tests in 0.001s
+
+OK
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+3.5 测试覆盖率
+测试覆盖率是找到代码库未经测试的部分的简单方法。它并不会告诉你的测试好不好。
+
+在 Python 中我们已经有了一个不错的覆盖率工具来帮助我们。你可以在实验楼环境中安装它：
+
+$ sudo pip3 install coverage
+覆盖率示例
+$ coverage3 run mounttest.py
+..
+----------------------------------------------------------------------
+Ran 2 tests in 0.013s
+
+OK
+$ coverage3 report -m
+Name           Stmts   Miss  Cover   Missing
+--------------------------------------------
+mounttab2.py      22      7    68%   16, 25-30, 34
+mounttest.py      14      0   100%
+--------------------------------------------
+TOTAL             36      7    81%
+我们还可以使用下面的命令以 HTML 文件的形式输出覆盖率结果，然后在浏览器中查看它。
+
+$ coverage3 html
+
+
+
+
+
+
