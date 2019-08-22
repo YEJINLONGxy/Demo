@@ -404,23 +404,38 @@ OK
 在 Python 中我们已经有了一个不错的覆盖率工具来帮助我们。你可以在实验楼环境中安装它：
 
 $ sudo pip3 install coverage
+
+[root@dev1 ~]# pip3 install coverage
+Collecting coverage
+  Cache entry deserialization failed, entry ignored
+  Downloading https://files.pythonhosted.org/packages/51/b1/13609068fff1c8c056f0c4601ad6985cf5c1bbfc529196ab08bd2a57dc39/coverage-4.5.4-cp36-cp36m-manylinux1_x86_64.whl (205kB)
+    100% |████████████████████████████████| 215kB 195kB/s 
+Installing collected packages: coverage
+Successfully installed coverage-4.5.4
+You are using pip version 9.0.1, however version 19.2.2 is available.
+You should consider upgrading via the 'pip install --upgrade pip' command.
+
 覆盖率示例
-$ coverage3 run mounttest.py
+
+[root@dev1 practice]# coverage
+coverage      coverage3     coverage-3.6  
+[root@dev1 practice]# coverage3 run mounttest.py 
 ..
 ----------------------------------------------------------------------
-Ran 2 tests in 0.013s
+Ran 2 tests in 0.001s
 
 OK
-$ coverage3 report -m
+[root@dev1 practice]# coverage3 report -m
 Name           Stmts   Miss  Cover   Missing
 --------------------------------------------
-mounttab2.py      22      7    68%   16, 25-30, 34
+mounttab2.py      22      7    68%   19, 28-33, 36
 mounttest.py      14      0   100%
 --------------------------------------------
 TOTAL             36      7    81%
-我们还可以使用下面的命令以 HTML 文件的形式输出覆盖率结果，然后在浏览器中查看它。
 
-$ coverage3 html
+我们还可以使用下面的命令以 HTML 文件的形式输出覆盖率结果，然后在浏览器中查看它。
+[root@dev1 practice]# coverage3 html
+
 
 
 
